@@ -13,7 +13,7 @@
       Integer Intermediate, Final, Not_Specified, Old_Functional_Type,
      &        LuGridFile
       Parameter (Intermediate=2, Final=1, Not_Specified=0)
-      Parameter(nBatch_Max=500)
+      Parameter(nBatch_Max=2000)
       Common /Grid_On_Disk/ Lu_Grid,ip_GridInfo,iDisk_Grid,jDisk_Grid,
      &                      iBatchInfo(3,nBatch_Max), nBatch,
      &                      Grid_Status, G_S(2),iDisk_Set(2),
