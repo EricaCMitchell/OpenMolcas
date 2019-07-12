@@ -211,6 +211,9 @@
 *
       lsym_tmp=lsym
 
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
+
       iStack  = 0
       iStack1 = 0
       iStack2 = 0
@@ -1126,6 +1129,9 @@
       thrsrho=1.0d-15
       thrsrho2=1.0d-15
 *
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
+
       lsym_tmp=lsym
       iStack  = 0
       iStack1 = 0
@@ -1220,6 +1226,9 @@
       Bb1=-3.794733192d+2
       Cb1=-8.538149682d+1
 *
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
+
       lsym_tmp=lsym
       iStack  = 0
       iStack1 = 0
@@ -1348,6 +1357,8 @@
       Bb1=-3.794733192d+2
       Cb1=-8.538149682d+1
 *
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
       lsym_tmp=lsym
 
       iStack  = 0
@@ -2348,6 +2359,8 @@
       Bb1=-3.794733192d+2
       Cb1=-8.538149682d+1
 *
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
       lsym_tmp=lsym
 
       iStack  = 0
@@ -3728,6 +3741,8 @@
       Bb1=-3.794733192d+2
       Cb1=-8.538149682d+1
 *
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
       lsym_tmp=lsym
       iStack  = 0
       iStack1 = 0
@@ -3884,6 +3899,8 @@
       Bb1=-3.794733192d+2
       Cb1=-8.538149682d+1
 *
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
       lsym_tmp=lsym
       iStack  = 0
       iStack1 = 0
@@ -4004,6 +4021,9 @@
       thrspi=1.0d-30
 *
       lsym_tmp=lsym
+
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
 
       Call CPU_Time(time1)
 
@@ -5592,6 +5612,9 @@
       Cb1=-8.538149682d+1
 *
       lsym_tmp=lsym
+
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
 
       iStack  = 0
       iStack1 = 0
@@ -10415,6 +10438,8 @@
         iStack = iStack + (iOrb*iOrb + iOrb)/2
       end do
 *
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !OE pieces - both orbs must be in the same irrep, eh?
@@ -10570,6 +10595,9 @@
         iStack1 = iStack1 + nBas(iSym)
         iStack  = iStack  + nAsh(iSym)
       End Do
+
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
 
       iStack = 0
       do iSym=1,nSym
@@ -10858,6 +10886,8 @@
 *
       lsym_tmp=lsym
 
+      Call Unused_real_array(RhoI)
+      Call Unused_real_array(RhoA)
 
       Call CPU_Time(time1)
 

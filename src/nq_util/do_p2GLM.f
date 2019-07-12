@@ -340,6 +340,9 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
 *                                                                      *
 ************************************************************************
 
+      Call unused_logical(do_grad)
+      Call unused_integer(naos)
+
 !      write(*,*) 'CMO print'
 !      do i=1,nMOs
 !       write(*,*) 'MO number: ',i
