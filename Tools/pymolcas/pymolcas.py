@@ -191,6 +191,7 @@ def main(my_name):
 
   if (not args['filename']):
     parser.description = 'MOLCAS has been found at {0}'.format(Molcas.molcas)
+    print(parser.description)
     parser.print_help()
     return(0)
   else:

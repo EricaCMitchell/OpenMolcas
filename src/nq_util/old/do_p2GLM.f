@@ -104,11 +104,12 @@ c      write(6,'(A15,2I3,2G15.8)')'iGrid,i,MO,RhoI',
 c     &   iGrid,i,TabMO(1,iGrid,i), RhoI(1,iGrid)
 !        if (Functional_type.eq.GGA_type.or.Do_Grad) then
         if (Functional_type.eq.GGA_type) then
-          integer :: num
-          Do num = 2, 4
-           RhoI(num,iGrid) = RhoI(num,iGrid) +
-     *                    TabMO(num,iGrid,i)*TabMO(num,iGrid,i)
-          End Do
+          RhoI(2,iGrid) = RhoI(2,iGrid) +
+     *                    TabMO(1,iGrid,i)*TabMO(2,iGrid,i)
+          RhoI(3,iGrid) = RhoI(3,iGrid) +
+     *                    TabMO(1,iGrid,i)*TabMO(3,iGrid,i)
+          RhoI(4,iGrid) = RhoI(4,iGrid) +
+     *                    TabMO(1,iGrid,i)*TabMO(4,iGrid,i)
         end if
 *
        End Do         ! i_
@@ -123,11 +124,12 @@ c     *          iGrid,P2_ontop(1,iGrid)
 *
 !        if (Functional_type.eq.GGA_type.or.Do_Grad) then
         if (Functional_type.eq.GGA_type) then
-          Integer :: num
-          Do num = 2, 4
-            P2_ontop(num,iGrid) = 4.0d0*RhoI(1,iGrid)*RhoI(num,iGrid)
-C            Write(6,'(A,1f28.20)') 'P2(2)   =',P2_ontop(num,iGrid)
-          end do
+            P2_ontop(2,iGrid) = 4.0d0*RhoI(1,iGrid)*RhoI(2,iGrid)
+C            Write(6,'(A,1f28.20)') 'P2(2)   =',P2_ontop(2,iGrid)
+            P2_ontop(3,iGrid) = 4.0d0*RhoI(1,iGrid)*RhoI(3,iGrid)
+C            Write(6,'(A,1f28.20)') 'P2(3)   =',P2_ontop(3,iGrid)
+            P2_ontop(4,iGrid) = 4.0d0*RhoI(1,iGrid)*RhoI(4,iGrid)
+C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(4,iGrid)
          end if
         if (Functional_type.eq.LDA_type.and.Do_Grad) then
 !Here I must
@@ -160,11 +162,15 @@ c       Write(6,'(A35,3I3,3G15.8)') 'iGrid,k,l,D1mo(kl),Tab(k),Tab(l)=',
 c     &    iGrid,k,l,D1mo(kl),TabMO(1,iGrid,k),TabMO(1,iGrid,l)
 !                     if (Functional_type.eq.GGA_type.or.Do_Grad) Then
                      if (Functional_type.eq.GGA_type) Then
-                      Integer :: num
-                      Do num = 2, 4
-                     RhoA(num,iGrid) = RhoA(num,iGrid) +
-     *                   D1mo(kl)*TabMO(1,iGrid,k)*TabMO(num,iGrid,l)
-                      end do
+                     RhoA(2,iGrid) = RhoA(2,iGrid) +
+     *                   D1mo(kl)*TabMO(1,iGrid,k)*TabMO(2,iGrid,l)
+                     RhoA(3,iGrid) = RhoA(3,iGrid) +
+     *                   D1mo(kl)*TabMO(1,iGrid,k)*TabMO(3,iGrid,l)
+C        write(6,*) 'RhoA(4,iGrid) bf =', RhoA(4,iGrid)
+                     RhoA(4,iGrid) = RhoA(4,iGrid) +
+     *                   D1mo(kl)*TabMO(1,iGrid,k)*TabMO(4,iGrid,l)
+*       Write(6,*) 'D1mo(kl),Tab(1,k),Tab(1,l)=',
+*     &    D1mo(kl)*TabMO(1,iGrid,k)*TabMO(4,iGrid,l)
                      end if
                   End Do     ! iGrid
                End Do      ! l_
@@ -181,13 +187,18 @@ c       Write(6,'(A15,I3,1f28.20)') 'iGrid,P2(1) =',
 c     *    iGrid,P2_ontop(1,iGrid)
 !        if (Functional_type.eq.GGA_type.or.Do_Grad) Then
         if (Functional_type.eq.GGA_type) Then
-         Integer :: num
-         Do num = 2, 4
-               P2_ontop(num,iGrid) = P2_ontop(num,iGrid) +
-     *                     2.0d0*RhoI(num,iGrid)*RhoA(1,iGrid) +
-     *                     2.0d0*RhoI(1,iGrid)*RhoA(num,iGrid)
-C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
-         end do
+               P2_ontop(2,iGrid) = P2_ontop(2,iGrid) +
+     *                     2.0d0*RhoI(2,iGrid)*RhoA(1,iGrid) +
+     *                     2.0d0*RhoI(1,iGrid)*RhoA(2,iGrid)
+C            Write(6,'(A,1f28.20)') 'P2(2)   =',P2_ontop(2,iGrid)
+               P2_ontop(3,iGrid) = P2_ontop(3,iGrid) +
+     *                     2.0d0*RhoI(3,iGrid)*RhoA(1,iGrid) +
+     *                     2.0d0*RhoI(1,iGrid)*RhoA(3,iGrid)
+C            Write(6,'(A,1f28.20)') 'P2(3)   =',P2_ontop(3,iGrid)
+               P2_ontop(4,iGrid) = P2_ontop(4,iGrid) +
+     *                     2.0d0*RhoI(4,iGrid)*RhoA(1,iGrid) +
+     *                     2.0d0*RhoI(1,iGrid)*RhoA(4,iGrid)
+C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(4,iGrid)
         end if
        End Do ! loop over grid points
       End If ! if Inactive
@@ -241,24 +252,51 @@ c         Write(6,'(A,1G28.20)') 'P2(1) =',P2_ontop(1,iGrid)
                              if (Functional_type.eq.GGA_type
      &                                     ) Then
 !     &                                     .or.Do_Grad) Then
-                              Integer :: num
-                              Do num = 2, 4
-                            P2_ontop(num,iGrid) = P2_ontop(num,iGrid)  +
+                              P2_ontop(2,iGrid) = P2_ontop(2,iGrid)  +
      &                                     Fact*P2mo(ijkl)*(
-     &                             TabMO(num,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(2,igrid,k)*TabMO(1,igrid,l)*
      &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
 c
-     &                             TabMO(1,igrid,k)*TabMO(num,igrid,l)*
+     &                             TabMO(1,igrid,k)*TabMO(2,igrid,l)*
      &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
 c
      &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
-     &                             TabMO(num,igrid,i)*TabMO(1,igrid,j) +
+     &                             TabMO(2,igrid,i)*TabMO(1,igrid,j) +
 c
      &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
-     &                             TabMO(1,igrid,i)*TabMO(num,igrid,j)
-     &                              )
-C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
-                               end do
+     &                             TabMO(1,igrid,i)*TabMO(2,igrid,j)
+     &                             )
+C            Write(6,'(A,1f28.20)') 'P2(2)   =',P2_ontop(2,iGrid)
+                              P2_ontop(3,iGrid) = P2_ontop(3,iGrid) +
+     &                                    Fact*P2mo(ijkl)*(
+     &                             TabMO(3,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+c
+     &                             TabMO(1,igrid,k)*TabMO(3,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+c
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(3,igrid,i)*TabMO(1,igrid,j) +
+c
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(3,igrid,j)
+     &                             )
+C            Write(6,'(A,1f28.20)') 'P2(3)   =',P2_ontop(3,iGrid)
+                              P2_ontop(4,iGrid) = P2_ontop(4,iGrid) +
+     &                                    Fact*P2mo(ijkl)*(
+     &                             TabMO(4,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+c
+     &                             TabMO(1,igrid,k)*TabMO(4,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+c
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(4,igrid,i)*TabMO(1,igrid,j) +
+c
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(4,igrid,j)
+     &                             )
+C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(4,iGrid)
                               end if
 *
                            End Do ! iGrid
@@ -339,6 +377,8 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
       iTri(i,j) = Max(i,j)*(Max(i,j)-1)/2 + Min(i,j)
 *                                                                      *
 ************************************************************************
+      Call unused_logical(do_grad)
+      Call unused_integer(naos)
 
 !      write(*,*) 'CMO print'
 !      do i=1,nMOs
@@ -576,11 +616,12 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
             RhoI(1,iGrid) = RhoI(1,iGrid) +
      &           TabMO(1,iGrid,i) * TabMO(1,iGrid,i)
         if (Functional_type.eq.GGA_type.and.ft) then
-         Integer :: num
-         Do num = 2, 4
-           RhoI(num,iGrid) = RhoI(num,iGrid) +
-     *                     TabMO(num,iGrid,i)*TabMO(num,iGrid,i)
-         end do
+          RhoI(2,iGrid) = RhoI(2,iGrid) +
+     *                    TabMO(1,iGrid,i)*TabMO(2,iGrid,i)
+          RhoI(3,iGrid) = RhoI(3,iGrid) +
+     *                    TabMO(1,iGrid,i)*TabMO(3,iGrid,i)
+          RhoI(4,iGrid) = RhoI(4,iGrid) +
+     *                    TabMO(1,iGrid,i)*TabMO(4,iGrid,i)
         end if
 *
       !Build dRhoI
@@ -589,12 +630,18 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
      &        dTabMO(1,i,g_eff,iGrid)*TabMO(1,iGrid,i)!times 2 or not?
 
         if (Functional_type.eq.GGA_type.and.ft) then
-          Integer :: num
-          Do num = 2, 4
-            dRhoI(num,iGrid,g_eff) = dRhoI(num,iGrid,g_eff) +
-     &      dTabMO(1,i,g_eff,iGrid)*TabMO(num,iGrid,i) +
-     &      TabMO(1,iGrid,i)*dTabMO(num,i,g_eff,iGrid)
-         end do
+            dRhoI(2,iGrid,g_eff) = dRhoI(2,iGrid,g_eff) +
+     &      dTabMO(1,i,g_eff,iGrid)*TabMO(2,iGrid,i) +
+     &      TabMO(1,iGrid,i)*dTabMO(2,i,g_eff,iGrid)
+
+            dRhoI(3,iGrid,g_eff) = dRhoI(3,iGrid,g_eff) +
+     &      dTabMO(1,i,g_eff,iGrid)*TabMO(3,iGrid,i) +
+     &      TabMO(1,iGrid,i)*dTabMO(3,i,g_eff,iGrid)
+
+            dRhoI(4,iGrid,g_eff) = dRhoI(4,iGrid,g_eff) +
+     &      dTabMO(1,i,g_eff,iGrid)*TabMO(4,iGrid,i) +
+     &      TabMO(1,iGrid,i)*dTabMO(4,i,g_eff,iGrid)
+
         end if !GGA
         end do !g_eff
 
@@ -674,12 +721,17 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
 !******************ADD STUFF FOR FTPBE HERE***************
 
                      if(Functional_type.eq.GGA_type.and.ft) Then
-                      Integer :: num
-                      Do num = 2, 4
-                         dRhoA(2,iGrid,g_eff) = dRhoA(2,iGrid,g_eff) +
+                       dRhoA(2,iGrid,g_eff) = dRhoA(2,iGrid,g_eff) +
      &               D1mo(kl)*dTabMO(1,k,g_eff,iGrid)*TabMO(2,iGrid,l) +
      &               D1mo(kl)*TabMO(1,iGrid,k)*dTabMO(2,l,g_eff,iGrid)
-                      end do
+
+                       dRhoA(3,iGrid,g_eff) = dRhoA(3,iGrid,g_eff) +
+     &               D1mo(kl)*dTabMO(1,k,g_eff,iGrid)*TabMO(3,iGrid,l) +
+     &               D1mo(kl)*TabMO(1,iGrid,k)*dTabMO(3,l,g_eff,iGrid)
+
+                       dRhoA(4,iGrid,g_eff) = dRhoA(4,iGrid,g_eff) +
+     &               D1mo(kl)*dTabMO(1,k,g_eff,iGrid)*TabMO(4,iGrid,l) +
+     &               D1mo(kl)*TabMO(1,iGrid,k)*dTabMO(4,l,g_eff,iGrid)
                      end if !GGA
 
 
@@ -694,12 +746,15 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
                P2_ontop(1,iGrid) = P2_ontop(1,iGrid) +
      *                           RhoI(1,iGrid)*RhoA(1,iGrid)
         if (Functional_type.eq.GGA_type.and.ft) Then
-            Integer :: num
-            Do num = 2, 4
-               P2_ontop(num,iGrid) = P2_ontop(num,iGrid) +
-     *                     2.0d0*RhoI(num,iGrid)*RhoA(1,iGrid) +
-     *                     2.0d0*RhoI(1,iGrid)*RhoA(num,iGrid)
-            end do
+               P2_ontop(2,iGrid) = P2_ontop(2,iGrid) +
+     *                     2.0d0*RhoI(2,iGrid)*RhoA(1,iGrid) +
+     *                     2.0d0*RhoI(1,iGrid)*RhoA(2,iGrid)
+               P2_ontop(3,iGrid) = P2_ontop(3,iGrid) +
+     *                     2.0d0*RhoI(3,iGrid)*RhoA(1,iGrid) +
+     *                     2.0d0*RhoI(1,iGrid)*RhoA(3,iGrid)
+               P2_ontop(4,iGrid) = P2_ontop(4,iGrid) +
+     *                     2.0d0*RhoI(4,iGrid)*RhoA(1,iGrid) +
+     *                     2.0d0*RhoI(1,iGrid)*RhoA(4,iGrid)
         end if !gga
         do g_eff=1,nGrad_Eff
           P2_ontop_d(1,g_eff,iGrid) = P2_ontop_d(1,g_eff,iGrid) +
@@ -774,23 +829,48 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
      *                             TabMO(1,igrid,i)*TabMO(1,igrid,j)
                              if (Functional_type.eq.GGA_type.and.ft
      &                                     ) Then
-                              Integer :: num
-                              Do num = 2, 4
-                            P2_ontop(num,iGrid) = P2_ontop(num,iGrid)  +
+                              P2_ontop(2,iGrid) = P2_ontop(2,iGrid)  +
      &                                     Fact*P2mo(ijkl)*(
-     &                              TabMO(num,igrid,k)*TabMO(1,igrid,l)*
-     &                              TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+     &                             TabMO(2,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
 !c
-     &                              TabMO(1,igrid,k)*TabMO(num,igrid,l)*
-     &                              TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+     &                             TabMO(1,igrid,k)*TabMO(2,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
 !c
-     &                              TabMO(1,igrid,k)*TabMO(1,igrid,l)*
-     &                             TabMO(num,igrid,i)*TabMO(1,igrid,j) +
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(2,igrid,i)*TabMO(1,igrid,j) +
 !c
-     &                              TabMO(1,igrid,k)*TabMO(1,igrid,l)*
-     &                              TabMO(1,igrid,i)*TabMO(num,igrid,j)
-     &                              )
-                               end do
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(2,igrid,j)
+     &                             )
+                              P2_ontop(3,iGrid) = P2_ontop(3,iGrid) +
+     &                                    Fact*P2mo(ijkl)*(
+     &                             TabMO(3,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+!c
+     &                             TabMO(1,igrid,k)*TabMO(3,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+!c
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(3,igrid,i)*TabMO(1,igrid,j) +
+!c
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(3,igrid,j)
+     &                             )
+                              P2_ontop(4,iGrid) = P2_ontop(4,iGrid) +
+     &                                    Fact*P2mo(ijkl)*(
+     &                             TabMO(4,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+!c
+     &                             TabMO(1,igrid,k)*TabMO(4,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(1,igrid,j) +
+!c
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(4,igrid,i)*TabMO(1,igrid,j) +
+!c
+     &                             TabMO(1,igrid,k)*TabMO(1,igrid,l)*
+     &                             TabMO(1,igrid,i)*TabMO(4,igrid,j)
+     &                             )
                               end if
 *
       do g_eff=1,nGrad_eff
@@ -812,47 +892,119 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
 
 
          if (Functional_type.eq.GGA_type.and.ft) Then
-          Integer :: num
-          Do num = 2, 4
-           P2_ontop_d(num,g_eff,iGrid) = P2_ontop_d(num,g_eff,iGrid) +
+           P2_ontop_d(2,g_eff,iGrid) = P2_ontop_d(2,g_eff,iGrid) +
      &     Fact*P2mo(ijkl)*
-     &     (dTabMO(num,i,g_eff,iGrid)*TabMO(1,igrid,j)*
+     &     (dTabMO(2,i,g_eff,iGrid)*TabMO(1,igrid,j)*
      &     TabMO(1,igrid,k)*TabMO(1,iGrid,l) +
-     &     dTabMO(1,i,g_eff,iGrid)*TabMO(num,igrid,j)*
+     &     dTabMO(1,i,g_eff,iGrid)*TabMO(2,igrid,j)*
      &     TabMO(1,igrid,k)*TabMO(1,iGrid,l) +
      &     dTabMO(1,i,g_eff,iGrid)*TabMO(1,igrid,j)*
-     &     TabMO(num,igrid,k)*TabMO(1,iGrid,l) +
+     &     TabMO(2,igrid,k)*TabMO(1,iGrid,l) +
      &     dTabMO(1,i,g_eff,iGrid)*TabMO(1,igrid,j)*
-     &     TabMO(1,igrid,k)*TabMO(num,iGrid,l) +
+     &     TabMO(1,igrid,k)*TabMO(2,iGrid,l) +
      &
-     &     TabMO(num,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
+     &     TabMO(2,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
      &     TabMO(1,iGrid,k)*TabMO(1,iGrid,l) +
-     &     TabMO(1,igrid,i)*dTabMO(num,j,g_eff,iGrid)*
+     &     TabMO(1,igrid,i)*dTabMO(2,j,g_eff,iGrid)*
      &     TabMO(1,iGrid,k)*TabMO(1,iGrid,l) +
      &     TabMO(1,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
-     &     TabMO(num,iGrid,k)*TabMO(1,iGrid,l) +
+     &     TabMO(2,iGrid,k)*TabMO(1,iGrid,l) +
      &     TabMO(1,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
-     &     TabMO(1,iGrid,k)*TabMO(num,iGrid,l) +
+     &     TabMO(1,iGrid,k)*TabMO(2,iGrid,l) +
      &
-     &     TabMO(num,iGrid,i)*TabMO(1,iGrid,j) *
+     &     TabMO(2,iGrid,i)*TabMO(1,iGrid,j) *
      &     dTabMO(1,k,g_eff,iGrid)*TabMO(1,igrid,l) +
-     &     TabMO(1,iGrid,i)*TabMO(num,iGrid,j) *
+     &     TabMO(1,iGrid,i)*TabMO(2,iGrid,j) *
      &     dTabMO(1,k,g_eff,iGrid)*TabMO(1,igrid,l) +
      &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
-     &     dTabMO(num,k,g_eff,iGrid)*TabMO(1,igrid,l) +
+     &     dTabMO(2,k,g_eff,iGrid)*TabMO(1,igrid,l) +
      &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
-     &     dTabMO(1,k,g_eff,iGrid)*TabMO(num,igrid,l) +
+     &     dTabMO(1,k,g_eff,iGrid)*TabMO(2,igrid,l) +
      &
-     &     TabMO(num,iGrid,i)*TabMO(1,iGrid,j) *
+     &     TabMO(2,iGrid,i)*TabMO(1,iGrid,j) *
      &     TabMO(1,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
-     &     TabMO(1,iGrid,i)*TabMO(num,iGrid,j) *
+     &     TabMO(1,iGrid,i)*TabMO(2,iGrid,j) *
      &     TabMO(1,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
      &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
-     &     TabMO(num,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
+     &     TabMO(2,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
      &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
-     &     TabMO(1,igrid,k)*dTabMO(num,l,g_eff,iGrid))
+     &     TabMO(1,igrid,k)*dTabMO(2,l,g_eff,iGrid))
 
-           end do
+           P2_ontop_d(3,g_eff,iGrid) = P2_ontop_d(3,g_eff,iGrid) +
+     &     Fact*P2mo(ijkl)*
+     &     (dTabMO(3,i,g_eff,iGrid)*TabMO(1,igrid,j)*
+     &     TabMO(1,igrid,k)*TabMO(1,iGrid,l) +
+     &     dTabMO(1,i,g_eff,iGrid)*TabMO(3,igrid,j)*
+     &     TabMO(1,igrid,k)*TabMO(1,iGrid,l) +
+     &     dTabMO(1,i,g_eff,iGrid)*TabMO(1,igrid,j)*
+     &     TabMO(3,igrid,k)*TabMO(1,iGrid,l) +
+     &     dTabMO(1,i,g_eff,iGrid)*TabMO(1,igrid,j)*
+     &     TabMO(1,igrid,k)*TabMO(3,iGrid,l) +
+     &
+     &     TabMO(3,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
+     &     TabMO(1,iGrid,k)*TabMO(1,iGrid,l) +
+     &     TabMO(1,igrid,i)*dTabMO(3,j,g_eff,iGrid)*
+     &     TabMO(1,iGrid,k)*TabMO(1,iGrid,l) +
+     &     TabMO(1,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
+     &     TabMO(3,iGrid,k)*TabMO(1,iGrid,l) +
+     &     TabMO(1,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
+     &     TabMO(1,iGrid,k)*TabMO(3,iGrid,l) +
+     &
+     &     TabMO(3,iGrid,i)*TabMO(1,iGrid,j) *
+     &     dTabMO(1,k,g_eff,iGrid)*TabMO(1,igrid,l) +
+     &     TabMO(1,iGrid,i)*TabMO(3,iGrid,j) *
+     &     dTabMO(1,k,g_eff,iGrid)*TabMO(1,igrid,l) +
+     &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
+     &     dTabMO(3,k,g_eff,iGrid)*TabMO(1,igrid,l) +
+     &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
+     &     dTabMO(1,k,g_eff,iGrid)*TabMO(3,igrid,l) +
+     &
+     &     TabMO(3,iGrid,i)*TabMO(1,iGrid,j) *
+     &     TabMO(1,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
+     &     TabMO(1,iGrid,i)*TabMO(3,iGrid,j) *
+     &     TabMO(1,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
+     &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
+     &     TabMO(3,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
+     &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
+     &     TabMO(1,igrid,k)*dTabMO(3,l,g_eff,iGrid))
+
+           P2_ontop_d(4,g_eff,iGrid) = P2_ontop_d(4,g_eff,iGrid) +
+     &     Fact*P2mo(ijkl)*
+     &     (dTabMO(4,i,g_eff,iGrid)*TabMO(1,igrid,j)*
+     &     TabMO(1,igrid,k)*TabMO(1,iGrid,l) +
+     &     dTabMO(1,i,g_eff,iGrid)*TabMO(4,igrid,j)*
+     &     TabMO(1,igrid,k)*TabMO(1,iGrid,l) +
+     &     dTabMO(1,i,g_eff,iGrid)*TabMO(1,igrid,j)*
+     &     TabMO(4,igrid,k)*TabMO(1,iGrid,l) +
+     &     dTabMO(1,i,g_eff,iGrid)*TabMO(1,igrid,j)*
+     &     TabMO(1,igrid,k)*TabMO(4,iGrid,l) +
+     &
+     &     TabMO(4,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
+     &     TabMO(1,iGrid,k)*TabMO(1,iGrid,l) +
+     &     TabMO(1,igrid,i)*dTabMO(4,j,g_eff,iGrid)*
+     &     TabMO(1,iGrid,k)*TabMO(1,iGrid,l) +
+     &     TabMO(1,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
+     &     TabMO(4,iGrid,k)*TabMO(1,iGrid,l) +
+     &     TabMO(1,igrid,i)*dTabMO(1,j,g_eff,iGrid)*
+     &     TabMO(1,iGrid,k)*TabMO(4,iGrid,l) +
+     &
+     &     TabMO(4,iGrid,i)*TabMO(1,iGrid,j) *
+     &     dTabMO(1,k,g_eff,iGrid)*TabMO(1,igrid,l) +
+     &     TabMO(1,iGrid,i)*TabMO(4,iGrid,j) *
+     &     dTabMO(1,k,g_eff,iGrid)*TabMO(1,igrid,l) +
+     &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
+     &     dTabMO(4,k,g_eff,iGrid)*TabMO(1,igrid,l) +
+     &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
+     &     dTabMO(1,k,g_eff,iGrid)*TabMO(4,igrid,l) +
+     &
+     &     TabMO(4,iGrid,i)*TabMO(1,iGrid,j) *
+     &     TabMO(1,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
+     &     TabMO(1,iGrid,i)*TabMO(4,iGrid,j) *
+     &     TabMO(1,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
+     &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
+     &     TabMO(4,igrid,k)*dTabMO(1,l,g_eff,iGrid) +
+     &     TabMO(1,iGrid,i)*TabMO(1,iGrid,j) *
+     &     TabMO(1,igrid,k)*dTabMO(4,l,g_eff,iGrid))
          end if !GGA
 
       end do!loop over nGrad_eff
