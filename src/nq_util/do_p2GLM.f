@@ -104,7 +104,7 @@ c      write(6,'(A15,2I3,2G15.8)')'iGrid,i,MO,RhoI',
 c     &   iGrid,i,TabMO(1,iGrid,i), RhoI(1,iGrid)
 !        if (Functional_type.eq.GGA_type.or.Do_Grad) then
         if (Functional_type.eq.GGA_type) then
-          integer :: num
+          Integer num
           Do num = 2, 4
            RhoI(num,iGrid) = RhoI(num,iGrid) +
      *                    TabMO(num,iGrid,i)*TabMO(num,iGrid,i)
@@ -123,7 +123,7 @@ c     *          iGrid,P2_ontop(1,iGrid)
 *
 !        if (Functional_type.eq.GGA_type.or.Do_Grad) then
         if (Functional_type.eq.GGA_type) then
-          Integer :: num
+          Integer num
           Do num = 2, 4
             P2_ontop(num,iGrid) = 4.0d0*RhoI(1,iGrid)*RhoI(num,iGrid)
 C            Write(6,'(A,1f28.20)') 'P2(2)   =',P2_ontop(num,iGrid)
@@ -160,7 +160,7 @@ c       Write(6,'(A35,3I3,3G15.8)') 'iGrid,k,l,D1mo(kl),Tab(k),Tab(l)=',
 c     &    iGrid,k,l,D1mo(kl),TabMO(1,iGrid,k),TabMO(1,iGrid,l)
 !                     if (Functional_type.eq.GGA_type.or.Do_Grad) Then
                      if (Functional_type.eq.GGA_type) Then
-                      Integer :: num
+                      Integer num
                       Do num = 2, 4
                      RhoA(num,iGrid) = RhoA(num,iGrid) +
      *                   D1mo(kl)*TabMO(1,iGrid,k)*TabMO(num,iGrid,l)
@@ -181,7 +181,7 @@ c       Write(6,'(A15,I3,1f28.20)') 'iGrid,P2(1) =',
 c     *    iGrid,P2_ontop(1,iGrid)
 !        if (Functional_type.eq.GGA_type.or.Do_Grad) Then
         if (Functional_type.eq.GGA_type) Then
-         Integer :: num
+         Integer num
          Do num = 2, 4
                P2_ontop(num,iGrid) = P2_ontop(num,iGrid) +
      *                     2.0d0*RhoI(num,iGrid)*RhoA(1,iGrid) +
@@ -241,7 +241,7 @@ c         Write(6,'(A,1G28.20)') 'P2(1) =',P2_ontop(1,iGrid)
                              if (Functional_type.eq.GGA_type
      &                                     ) Then
 !     &                                     .or.Do_Grad) Then
-                              Integer :: num
+                              Integer num
                               Do num = 2, 4
                             P2_ontop(num,iGrid) = P2_ontop(num,iGrid)  +
      &                                     Fact*P2mo(ijkl)*(
@@ -509,17 +509,12 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
 
           Select CASE (iCoord)
            CASE (1) !x-coord
+                  Integer num
+                  Do num = 2, 4
                     dTabMO(2,i,g_eff,iGrid) = dTabMO(2,i,g_eff,iGrid) +
      &              CMO(CMO_OFF + AO_j + (MO_i-1)*nBas(iIrrep))
      &             *(TabSO(5,iGrid,j))
-
-                    dTabMO(3,i,g_eff,iGrid) = dTabMO(3,i,g_eff,iGrid) +
-     &              CMO(CMO_OFF + AO_j + (MO_i-1)*nBas(iIrrep))
-     &             *(TabSO(6,iGrid,j))
-
-                    dTabMO(4,i,g_eff,iGrid) = dTabMO(4,i,g_eff,iGrid) +
-     &              CMO(CMO_OFF + AO_j + (MO_i-1)*nBas(iIrrep))
-     &            *(TabSO(7,iGrid,j))
+                  end do
 
            CASE (2) !y-coord
                     dTabMO(2,i,g_eff,iGrid) = dTabMO(2,i,g_eff,iGrid) +
@@ -579,7 +574,7 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
             RhoI(1,iGrid) = RhoI(1,iGrid) +
      &           TabMO(1,iGrid,i) * TabMO(1,iGrid,i)
         if (Functional_type.eq.GGA_type.and.ft) then
-         Integer :: num
+         Integer num
          Do num = 2, 4
            RhoI(num,iGrid) = RhoI(num,iGrid) +
      *                     TabMO(num,iGrid,i)*TabMO(num,iGrid,i)
@@ -592,7 +587,7 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
      &        dTabMO(1,i,g_eff,iGrid)*TabMO(1,iGrid,i)!times 2 or not?
 
         if (Functional_type.eq.GGA_type.and.ft) then
-          Integer :: num
+          Integer num
           Do num = 2, 4
             dRhoI(num,iGrid,g_eff) = dRhoI(num,iGrid,g_eff) +
      &      dTabMO(1,i,g_eff,iGrid)*TabMO(num,iGrid,i) +
@@ -677,7 +672,7 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
 !******************ADD STUFF FOR FTPBE HERE***************
 
                      if(Functional_type.eq.GGA_type.and.ft) Then
-                      Integer :: num
+                      Integer num
                       Do num = 2, 4
                          dRhoA(2,iGrid,g_eff) = dRhoA(2,iGrid,g_eff) +
      &               D1mo(kl)*dTabMO(1,k,g_eff,iGrid)*TabMO(2,iGrid,l) +
@@ -697,7 +692,7 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
                P2_ontop(1,iGrid) = P2_ontop(1,iGrid) +
      *                           RhoI(1,iGrid)*RhoA(1,iGrid)
         if (Functional_type.eq.GGA_type.and.ft) Then
-            Integer :: num
+            Integer num
             Do num = 2, 4
                P2_ontop(num,iGrid) = P2_ontop(num,iGrid) +
      *                     2.0d0*RhoI(num,iGrid)*RhoA(1,iGrid) +
@@ -777,7 +772,7 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
      *                             TabMO(1,igrid,i)*TabMO(1,igrid,j)
                              if (Functional_type.eq.GGA_type.and.ft
      &                                     ) Then
-                              Integer :: num
+                              Integer num
                               Do num = 2, 4
                             P2_ontop(num,iGrid) = P2_ontop(num,iGrid)  +
      &                                     Fact*P2mo(ijkl)*(
@@ -815,7 +810,7 @@ C            Write(6,'(A,1f28.20)') 'P2(4)   =',P2_ontop(num,iGrid)
 
 
          if (Functional_type.eq.GGA_type.and.ft) Then
-          Integer :: num
+          Integer num
           Do num = 2, 4
            P2_ontop_d(num,g_eff,iGrid) = P2_ontop_d(num,g_eff,iGrid) +
      &     Fact*P2mo(ijkl)*
