@@ -1,9 +1,0 @@
-
-configuration info
-------------------
-C Compiler ID: GNU
-C flags: -std=gnu99 -fopenmp
-Fortran Compiler ID: GNU
-Fortran flags: -fno-aggressive-loop-optimizations -cpp -fdefault-integer-8 -fopenmp
-Definitions: _MOLCAS_;_I8_;_LINUX_;_MKL_
-Parallel: OFF (GA=OFF)

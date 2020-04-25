@@ -1,2 +1,0 @@
- (prgm) "$MOLCAS/bin/wfa.exe" executable
- (file) WFAINP "$WorkDir/$Project."Wfa.Input rwi
