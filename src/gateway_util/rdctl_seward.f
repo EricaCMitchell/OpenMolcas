@@ -100,7 +100,7 @@
       Save iSeed
       Logical Vlct_
 *
-      Logical DoEMPC
+      Logical DoEMPC, Basis_test
       Common /EmbPCharg/ DoEMPC
 *
 #ifdef _GROMACS_
@@ -171,6 +171,8 @@
 *
       isXfield=0
       CholeskyThr=-9.99d9
+*
+      Basis_Test=.False.
 *                                                                      *
 ************************************************************************
 *                                                                      *
@@ -248,6 +250,7 @@
 *
       imix=0
       ifnr=-1
+      ign=0
       itype=0
       ExtBasDir=' '
       isxbas=0
@@ -339,7 +342,12 @@ cperiod
 *
 *     KeyWord directed input
 *
+      nDone=0
  998  lTtl = .False.
+      If (Basis_Test.and.nDone.eq.1) Then
+         nDone=0
+         Basis_Test=.False.
+      End If
  9988 Continue
       Key = Get_Ln(LuRd)
 *
@@ -367,8 +375,9 @@ cperiod
       KWord = Key
       Call UpCase(KWord)
       Previous_Command=KWord(1:4)
-      If (KWord(1:1).eq.'*')    Go To 998
-      If (KWord.eq.BLine)       Go To 998
+      If (KWord(1:1).eq.'*') Go To 998
+      If (KWord.eq.BLine)    Go To 998
+      If (Basis_Test) nDone=1
 *
 *     KEYWORDs in ALPHABETIC ORDER!
 *
@@ -576,6 +585,26 @@ c    &       KWord(4:4).eq.'C') ) Go To 657
 *
       If (KWord(1:4).eq.'END ') Go To 997
       If (lTtl) Go To 911
+*
+      If (Basis_test) Then
+*
+*        So the Basis keyword was in the native format.
+*        We have to back step until we find the command line!
+*
+         Backspace(LuRd)
+         Backspace(LuRd)
+         Read(LuRd,'(A)') Key
+         Call UpCase(Key)
+         Do While(Index(Key(1:4),'BASI').eq.0)
+              Backspace(LuRd)
+              Backspace(LuRd)
+              Read(LuRd,'(A)') Key
+              Call UpCase(Key)
+         End Do
+         Basis_test=.False.
+         nDone=0
+         Go To 9201
+      End If
       iChrct=Len(KWord)
       Last=iCLast(KWord,iChrct)
       Write (LuWr,*)
@@ -1019,28 +1048,37 @@ c Simplistic validity check for value
 *     Read information for a basis set
 *
  920  continue
-      If (CoordSet) then
-         GWInput=.True.
-         If (BasisSet) Then
-            KeepBasis=
-     &             KeepBasis(1:index(KeepBasis,' '))//','//Get_Ln(LuRd)
-         Else
-            KeepBasis=Get_Ln(LuRd)
-         Endif
-         BasisSet=.True.
-         temp1=KeepBasis
-         Call UpCase(temp1)
-        if (INDEX(temp1,'INLINE').ne.0) then
-       Write(LuWr,*) 'XYZ input and Inline basis set are not compatible'
-       Write(LuWr,*) 'Consult the manual how to change inline basis set'
-       Write(LuWr,*) ' into basis set library'
-         Call Quit_OnUserError()
-         endif
-         iOpt_XYZ=1
-         Goto 998
+*
+*     Check if the format is old or new style. Damn the person who used
+*     the same keword for two different styles of input and making the
+*     input require a specific order of the keyword. Comrade 55?
+*
+      Basis_Test=.True.
+*
+      GWInput=.True.
+      Key = Get_Ln(LuRd)
+      BSLbl = Key(1:80)
+      If (BasisSet) Then
+         KeepBasis=KeepBasis(1:index(KeepBasis,' '))//','//BSLbl
       Else
-         iOpt_XYZ=0
-      End If
+         KeepBasis=BSLbl
+         BasisSet=.True.
+      Endif
+      temp1=KeepBasis
+      Call UpCase(temp1)
+*     If (INDEX(temp1,'INLINE').ne.0) then
+*        Write(LuWr,*)
+*    &        'XYZ input and Inline basis set are not compatible'
+*        Write(LuWr,*)
+*    &        'Consult the manual how to change inline basis set'
+*        Write(LuWr,*) ' into basis set library'
+*        Call Quit_OnUserError()
+*     End If
+      iOpt_XYZ=1
+      Goto 998
+*
+ 9201 Continue
+      iOpt_XYZ=0
       GWInput=.True.
       nCnttp = nCnttp + 1
       If (Run_Mode.eq.S_Mode) Then
@@ -1066,9 +1104,9 @@ c Simplistic validity check for value
 *
       Call UpCase(BSLbl)
       iDummy_basis=0
+      Call ICopy(4,BasisTypes,1,BasisTypes_save,1)
       If (BSLbl(1:2).eq.'X.'.and.Index(BSLbl,'INLINE').eq.0.and.
      &    Index(BSLbl,'RYDBERG').eq.0) Then
-         Call ICopy(4,BasisTypes,1,BasisTypes_save,1)
          BSLbl_Dummy=BSLbl
          BSLbl='X.ANO-RCC.'
          Do i=11,80
@@ -1156,10 +1194,12 @@ c Simplistic validity check for value
       If (iDummy_Basis.eq.1) Call ICopy(4,BasisTypes_Save,1,
      &                                    BasisTypes,1)
       If (itype.eq.0) Then
-         If (BasisTypes(3).eq.1 .or. BasisTypes(3).eq.2)
+         If (BasisTypes(3).eq.1 .or. BasisTypes(3).eq.2 .or.
+     &       BasisTypes(3).eq.14)
      &       iType=BasisTypes(3)
       Else
-         If (BasisTypes(3).eq.1 .or. BasisTypes(3).eq.2) Then
+         If (BasisTypes(3).eq.1 .or. BasisTypes(3).eq.2 .or.
+     &       BasisTypes(3).eq.14) Then
             If (BasisTypes(3).ne.iType) Then
                imix=1
                BasisTypes(3)=-1
@@ -1168,7 +1208,17 @@ c Simplistic validity check for value
          End If
       End If
       If (itype.eq.1) ifnr=1
-      If (itype.eq.2) ifnr=0
+      If (itype.eq.2 .or. itype.eq.14) ifnr=0
+*
+      If (ign.eq.0) Then
+         ign=BasisTypes(4)
+      Else If (BasisTypes(4).ne.ign) Then
+         Call WarningMessage(1,
+     &     'SEWARD found basis sets of mixed nuclear charge model. '
+     &   //'The most advanced one will be used.')
+         ign=Max(ign,BasisTypes(4))
+         BasisTypes(4)=ign
+      End If
 *
       If (nSOC.gt.-1) Then
          Do l = 1, MxAng
@@ -1238,12 +1288,10 @@ C        Write (LuWr,*) 'RMax_R=',RMax_R
 *                                                                      *
 ************************************************************************
 *                                                                      *
-*     Here we will have to fix that the 6-31G family of basis sets
-*     should by default be used with 6 d-functions rather than 5.
+*     Set Cartesian functions if specified by the basis type
+*     (6-31G family).
 *
-      KWord=BSLbl(1:Indx-1)
-      Call UpCase(KWord)
-      If (INDEX(KWord,'6-31G').ne.0) Then
+      If (BasisTypes(1).eq.9) Then
          Do iSh = jShll+3, iShll
             Prjct(iSh)=.False.
             Transf(iSh)=.False.
@@ -1256,14 +1304,24 @@ C        Write (LuWr,*) 'RMax_R=',RMax_R
 *     This will also automatically activate finite nuclear mass
 *     correction.
 *
+      KWord=BSLbl(1:Indx-1)
+      Call UpCase(KWord)
       If (INDEX(KWord,'MUONIC').ne.0) Then
          fmass(nCnttp)=
      &    CONST_MUON_MASS_IN_SI_ / CONST_ELECTRON_MASS_IN_SI_
          FNMC=.True.
-         Nuclear_Model=Gaussian_Type
          tDel=1.0D50
          Call Put_dScalar('T delete thr',tDel)
       End If
+*                                                                      *
+************************************************************************
+*                                                                      *
+*     Update BasisTypes
+*
+      Do i=1,4
+         If (BasisTypes_save(i).eq.0) Cycle
+         If (BasisTypes(i).ne.BasisTypes_save(i)) BasisTypes(i)=-1
+      End Do
 *                                                                      *
 ************************************************************************
 *                                                                      *
@@ -4017,7 +4075,7 @@ c      endif
          Call WarningMessage(2,
      &      ' input is inconsistent!;'
      &    //'SEWARD found basis sets of mixed relativistic'
-     &    //' and non-relativistic types!')
+     &    //' (or non-relativistic) types!')
          if(.not.Expert) Call Quit_OnUserError()
       End If
       If (ifnr.eq.1) Then
@@ -4033,7 +4091,13 @@ c      endif
          If (.Not.DKroll) Then
             DKroll=.True.
 C           If (iRELAE.eq.-1) IRELAE=201022
-            If (iRELAE.eq.-1) IRELAE=  1022
+            If (iRELAE.eq.-1) Then
+               If (itype.eq.2) Then
+                  IRELAE=  1022
+               Else If (itype.eq.14) Then
+                  IRELAE=   101
+               End If
+            End If
          End If
          If (MolWgh.ne.0 .and. MolWgh.ne.2) MolWgh=2
       End If
@@ -4050,6 +4114,11 @@ C           If (iRELAE.eq.-1) IRELAE=201022
 ************************************************************************
 *                                                                      *
 *     Activate Finite Nucleus parameters
+*
+      If (Nuclear_Model.eq.Point_Charge) Then
+         If (ign.eq.2) Nuclear_Model=Gaussian_Type
+         If (ign.eq.3) Nuclear_Model=mGaussian_Type
+      End If
 *
       Do iCnttp = 1, nCnttp
          If (Nuclear_Model.eq.Gaussian_Type) Then

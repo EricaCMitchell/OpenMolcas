@@ -13,7 +13,7 @@ General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with OpenMolcas. If not, see <http://www.gnu.org/licenses/>.
 
-Copyright (C) 1989-2019, The OpenMolcas Authors
+Copyright (C) 1989-2020, The OpenMolcas Authors
 
 
 NOTE: Some of the files distributed with OpenMolcas may be subject to a more
@@ -94,6 +94,7 @@ Gene H. Golub
 Sergey Gusarov  
 Daniel Hagberg  
 Jun-ya Hasegawa  
+Matthew R Hermes  
 José Manuel Hermida-Ramón  
 Bernd Artur Heß  
 Asbjørn Holt  
@@ -143,6 +144,7 @@ Michael A. Saunders
 Igor Schapiro  
 Bernd Schimmelpfennig  
 Martin Schütz  
+Thais Scott  
 Luis Seijo  
 Luis Serrano-Andrés  
 Kamal Sharkas  
@@ -177,5 +179,5 @@ Sebastian Wouters
 Felipe Zapata  
 Alexander Zech  
 Yan Zhao  
-J. Patrick Zobel  
-
+J. Patrick Zobel
+  

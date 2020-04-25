@@ -57,6 +57,7 @@
 *> - '``D1av``'                     Average one particle density matrix, AO basis.
 *> - '``D1mo``'                     One particle density matrix, MO basis.
 *> - '``D1sao``'                    One particle spin density matrix, AO basis.
+*> - '``D1activeao``'               One particle density matrix, AO basis, active orbitals
 *> - '``D2av``'                     Average two particle density matrix for the active space, AO basis.
 *> - '``dExcdRa``'                  The potential of the exchange-correlation functional.
 *> - '``DLAO``'
@@ -318,7 +319,7 @@ c mess started here :)
          RecLab(159)='HAMSOR_SINGLE   '
          RecLab(160)='HAMSOI_SINGLE   '
          RecLab(161)='Last Dipole Mome' !nts
-         RecLab(162)='Un_cen Charge   '
+         RecLab(162)='Un_cen Effective' ! Charge
          RecLab(163)='Un_cen Coordinat' !es
          RecLab(164)='ANGMR_NSS       '
          RecLab(165)='ANGMI_NSS       '
@@ -326,6 +327,8 @@ c mess started here :)
          RecLab(167)='EDIPI_NSS       '
          RecLab(168)='SPINR_NSS       '
          RecLab(169)='SPINI_NSS       '
+         RecLab(170)='Proj_Coord      '
+         RecLab(171)='d1activeao      '
 *                     1234567890123456
 *
 *        If you go beyond 256: update pg_da_info.fh and this line!
